@@ -39,16 +39,16 @@ jobs:
 
       - uses: actions/cache@v6
         with:
-          path: CleanBro/.build
-          key: spm-${{ runner.os }}-${{ hashFiles('CleanBro/Package.swift', 'CleanBro/Package.resolved') }}
+          path: apps/macos/app/.build
+          key: spm-${{ runner.os }}-${{ hashFiles('apps/macos/app/Package.swift', 'apps/macos/Package.resolved') }}
           restore-keys: spm-${{ runner.os }}-
 
       - name: Build
-        run: ./CleanBro/build.sh
+        run: ./apps/macos/app/build.sh
 
       - name: Verifikasi bundle
         run: |
-          APP=CleanBro/build/CleanBro.app
+          APP=apps/macos/app/build/CleanBro.app
           lipo -archs "$APP/Contents/MacOS/CleanBro"
           codesign --verify --deep --strict "$APP"
           plutil -p "$APP/Contents/Info.plist" | grep -E 'CFBundle(ShortVersionString|Version)'
@@ -56,7 +56,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           name: CleanBro
-          path: CleanBro/build/CleanBro.zip
+          path: apps/macos/app/build/CleanBro.zip
           if-no-files-found: error
 
   cli:
@@ -67,13 +67,15 @@ jobs:
 
       - uses: actions/setup-go@v7
         with:
-          go-version-file: go.mod
+          go-version-file: apps/macos/cli/go.mod
           cache: false # tidak ada dependency (go.sum)
 
       - name: Vet
+        working-directory: apps/macos/cli
         run: go vet ./...
 
       - name: Build universal
+        working-directory: apps/macos/cli
         run: |
           mkdir -p dist
           GOARCH=arm64 go build -trimpath -ldflags="-s -w" -o dist/cleanbro-arm64 .
@@ -85,7 +87,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           name: cleanbro-cli
-          path: dist/cleanbro-cli-macos-universal.tar.gz
+          path: apps/macos/cli/dist/cleanbro-cli-macos-universal.tar.gz
           if-no-files-found: error
 
   release:

@@ -1,6 +1,6 @@
 // Places a window capture (taken with `screencapture -l <id>`, shadow included)
 // on a teal gradient backdrop for the README.
-// Usage: swift docs/screenshots/frame.swift <window.png> <out.png>
+// Usage: swift apps/macos/tools/frame.swift <window.png> <out.png>
 import AppKit
 
 let args = CommandLine.arguments
