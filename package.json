@@ -1,0 +1,10 @@
+{
+  "name": "cleanbro-monorepo",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "typecheck": "bun run --cwd packages/ui typecheck && bun run --cwd apps/linux typecheck",
+    "dev:linux": "bun run --cwd apps/linux tauri dev",
+    "build:linux": "bun run --cwd apps/linux tauri build"
+  }
+}
