@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@source "./**/*.{ts,tsx}";
+@source "../../../packages/ui/src/**/*.{ts,tsx}";
+
+/* Petakan token bersama (--cb-*) menjadi utility Tailwind. */
+@theme inline {
+  --color-canvas: var(--cb-canvas);
+  --color-surface: var(--cb-surface);
+  --color-surface-muted: var(--cb-surface-muted);
+  --color-line: var(--cb-border);
+  --color-ink: var(--cb-text);
+  --color-ink-muted: var(--cb-text-muted);
+  --color-warn: #d97706;
+  --color-danger: #dc2626;
+  --font-sans: var(--cb-font);
+  --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius-cb: var(--cb-radius);
+  --ease-cb: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Dialog masuk 200ms ease-out; keluar dipotong instan agar tidak menumpuk. */
+@keyframes cb-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.cb-dialog-enter {
+  animation: cb-dialog-in 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes cb-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.cb-sheet-enter {
+  animation: cb-sheet-in 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Path panjang: pertahankan urutan karakter, potong dari kiri. */
+.cb-path-tail {
+  direction: rtl;
+  unicode-bidi: plaintext;
+  text-align: left;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

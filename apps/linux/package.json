@@ -1,5 +1,5 @@
 {
-  "name": "@cleanbro/linux",
+  "name": "@sapubersih/linux",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -10,10 +10,12 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@cleanbro/ui": "workspace:*",
+    "@tanstack/react-query": "^5.0.0",
     "@tauri-apps/api": "^2.0.0",
+    "lucide-react": "^0.468.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "@sapubersih/ui": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.0",
