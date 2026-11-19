@@ -56,6 +56,31 @@ fn walker_sums_file_size() {
 }
 
 #[test]
+fn walker_parallel_calls_keep_entries() {
+    // Regresi: walk di dalam rayon::par_iter dulu memakai pool rayon yang sama,
+    // gagal start, dan mengembalikan nol tanpa error.
+    let root = common::TempDir::new("walk-parallel");
+    let dirs: Vec<_> = (0..12)
+        .map(|index| {
+            let dir = root.path.join(format!("dir-{index}"));
+            common::write_file(&dir.join("sub/berkas.bin"), 4096);
+            dir
+        })
+        .collect();
+
+    use rayon::prelude::*;
+    let results: Vec<_> = dirs
+        .par_iter()
+        .map(|dir| walk(dir, &options(4), &CancellationToken::new()))
+        .collect();
+    for (dir, result) in dirs.iter().zip(results) {
+        assert_eq!(result.files, 1, "walk {} kehilangan berkas", dir.display());
+        assert!(result.bytes > 0, "walk {} tanpa byte", dir.display());
+        assert!(!result.cancelled);
+    }
+}
+
+#[test]
 fn walker_marks_partial_when_file_budget_hit() {
     let dir = common::TempDir::new("walk-budget");
     for index in 0..10 {

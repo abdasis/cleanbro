@@ -5,22 +5,22 @@ Status per 2026-11-19.
 | Area | Linux (`apps/linux`, Sapu Bersih) | macOS (`apps/macos`, CleanBro) |
 | --- | --- | --- |
 | Shell desktop | Tauri 2, Rust + React 19 | SwiftUI (app existing) |
-| Ringkasan disk | target v0.1 | tersedia |
-| Scan cache developer | target v0.1 | tersedia (Xcode, npm, Gradle, `~/.cache`) |
-| Scan log dan crash report | target v0.1 | tersedia |
-| Preview sebelum hapus | target v0.1 | tersedia |
-| Hapus ke trash | target v0.1 | tersedia |
-| Riwayat dan undo | target v0.1 | tidak ada |
-| Docker adapter | target v0.1 | tidak berlaku |
+| Ringkasan disk | tersedia | tersedia |
+| Scan cache developer | tersedia | tersedia (Xcode, npm, Gradle, `~/.cache`) |
+| Scan log dan crash report | belum | tersedia |
+| Preview sebelum hapus | tersedia | tersedia |
+| Hapus ke trash | tersedia | tersedia |
+| Riwayat dan undo | tersedia | tidak ada |
+| Docker adapter | tersedia (status + prune aman) | tidak berlaku |
 | Cache sistem (apt/journald) | target v0.1 | tidak berlaku |
 | Homebrew cleanup | tidak berlaku | tersedia |
 | Uninstall aplikasi | di luar v0.1 | tersedia |
-| Disk usage tree | tidak ada | tersedia |
-| Large files | target v0.1 | tersedia |
-| Stale files | target v0.1 | tersedia |
-| Duplicate files | roadmap | tersedia |
-| Tema terang/gelap | target v0.1 | tersedia |
-| Bahasa | Indonesia + Inggris (target) | Indonesia + Inggris |
+| Disk usage tree | belum | tersedia |
+| Large files | belum | tersedia |
+| Stale files | belum | tersedia |
+| Duplicate files | belum | tersedia |
+| Tema terang/gelap | mengikuti sistem | tersedia |
+| Bahasa | Indonesia | Indonesia + Inggris |
 
 ## Aturan parity
 

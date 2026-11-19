@@ -52,6 +52,10 @@ pub fn walk(root: &Path, opts: &WalkOptions, cancel: &CancellationToken) -> Walk
     let cancel_cb = cancel.clone();
     let walker = WalkDir::new(root)
         .max_depth(opts.max_depth)
+        // Pool rayon terpisah: `RayonDefaultPool` yang dipakai walker dalam
+        // rayon::par_iter (scan_service) bisa gagal start lalu mengembalikan
+        // Error::busy; entri dilewati dan hasil walk menjadi nol.
+        .parallelism(jwalk::Parallelism::RayonNewPool(0))
         .skip_hidden(false)
         .follow_links(false)
         .process_read_dir(move |_, _, _, children| {
