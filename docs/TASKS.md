@@ -22,7 +22,7 @@ dikerjakan terpisah dengan SwiftUI; lihat [PLATFORMS.md](PLATFORMS.md).
 | M2 scan engine | selesai |
 | M3 preview, eksekusi, riwayat | selesai |
 | M4 docker adapter | dikerjakan |
-| M5 UI lengkap | sebagian: overview, scan, preview, eksekusi, hasil, riwayat, docker. Belum: setelan, i18n, shortcut |
+| M5 UI lengkap | selesai kecuali shortcut global (command palette, Ctrl+R) |
 | M6 rilis | belum dimulai |
 
 ## Cara eksekusi

@@ -50,9 +50,10 @@ bun run typecheck
 ```
 
 Status: MVP v0.1. Tersedia: ringkasan disk, scan cepat/dalam, preview per
-kategori, eksekusi ke trash dengan konfirmasi, riwayat + undo, dan adapter
-Docker (status + prune aman). Belum: setelan, i18n, large/stale/duplicate
-files, dan rilis installer. Lihat `docs/TASKS.md`.
+kategori, eksekusi ke trash dengan konfirmasi, riwayat + undo, adapter Docker
+(status + prune aman), halaman Setelan, dan bahasa Indonesia/Inggris. Belum:
+shortcut global, large/stale/duplicate files, dan rilis installer. Lihat
+`docs/TASKS.md`.
 
 ## CleanBro (macOS)
 

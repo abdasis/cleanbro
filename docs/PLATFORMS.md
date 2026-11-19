@@ -20,7 +20,7 @@ Status per 2026-11-19.
 | Stale files | belum | tersedia |
 | Duplicate files | belum | tersedia |
 | Tema terang/gelap | mengikuti sistem | tersedia |
-| Bahasa | Indonesia | Indonesia + Inggris |
+| Bahasa | Indonesia + Inggris | Indonesia + Inggris |
 
 ## Aturan parity
 
