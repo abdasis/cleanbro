@@ -8,6 +8,11 @@ description = "Tipe dan aturan bersama untuk Sapu Bersih dan CleanBro"
 [dependencies]
 serde.workspace = true
 thiserror.workspace = true
+jwalk.workspace = true
+rayon.workspace = true
+rusqlite.workspace = true
+globset.workspace = true
+uuid.workspace = true
 
 [dev-dependencies]
 serde_json.workspace = true

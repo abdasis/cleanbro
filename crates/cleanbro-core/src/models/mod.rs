@@ -2,6 +2,20 @@ use serde::{Deserialize, Serialize};
 
 use crate::rules::RULES_VERSION;
 
+mod action;
+mod disk;
+mod docker;
+mod scan;
+
+pub use action::{
+    ActionStatus, ActionSummary, CleanFinished, CleanItemState, CleanMode, CleanPlan,
+    CleanProgress, HistoryPage, PlanItem, TokenGrant, UndoEntry, UndoOutcome,
+    CONFIRM_THRESHOLD_BYTES,
+};
+pub use disk::{DiskSummary, WarnLevel};
+pub use docker::{DockerContainer, DockerDiskUsage, DockerImage, DockerPruneResult, DockerStatus};
+pub use scan::{CategoryDone, Finding, ScanFinished, ScanId, ScanMode, ScanProgress};
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Platform {
