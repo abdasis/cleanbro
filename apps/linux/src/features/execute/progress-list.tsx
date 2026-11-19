@@ -1,14 +1,16 @@
 import type { ReactElement } from "react";
 import type { ItemProgress } from "../../hooks/use-execute";
-import { formatBytes, truncateMiddle } from "../../lib/format";
+import { useI18n } from "../../lib/i18n/i18n-context";
+import { useFormat } from "../../lib/i18n/use-format";
+import type { TranslationKey } from "../../lib/i18n/dictionary";
 import type { CleanItemState, PlanItem } from "../../lib/types";
 
-const STATE_LABEL: Record<CleanItemState, string> = {
-  pending: "Menunggu",
-  running: "Berjalan",
-  done: "Selesai",
-  failed: "Gagal",
-  skipped: "Dilewati",
+const STATE_KEY: Record<CleanItemState, TranslationKey> = {
+  pending: "state.pending",
+  running: "state.running",
+  done: "state.done",
+  failed: "state.failed",
+  skipped: "state.skipped",
 };
 
 export type ProgressListProps = {
@@ -20,6 +22,9 @@ export function ProgressList({
   items,
   progress,
 }: ProgressListProps): ReactElement {
+  const { t } = useI18n();
+  const format = useFormat();
+
   return (
     <ul className="divide-y divide-line rounded-cb border border-line">
       {items.map((item) => {
@@ -36,14 +41,14 @@ export function ProgressList({
                 title={item.path}
                 className="block truncate font-mono text-[12px]"
               >
-                {truncateMiddle(item.path, 56)}
+                {format.truncateMiddle(item.path, 56)}
               </span>
               <span className="block text-[11px] text-ink-muted">
-                {STATE_LABEL[current]}
+                {t(STATE_KEY[current])}
               </span>
             </span>
             <span className="shrink-0 font-mono text-[12px] text-ink-muted tabular-nums">
-              {formatBytes(state?.freedBytes ?? item.bytes)}
+              {format.bytes(state?.freedBytes ?? item.bytes)}
             </span>
           </li>
         );

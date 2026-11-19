@@ -1,6 +1,7 @@
 import type { ReactElement } from "react";
 import { ScanLine, ScanSearch } from "lucide-react";
 import { Button } from "../../components/ui/button";
+import { useI18n } from "../../lib/i18n/i18n-context";
 import type { ScanMode } from "../../lib/types";
 
 export type ScanActionsProps = {
@@ -14,6 +15,8 @@ export function ScanActions({
   disabled,
   onStart,
 }: ScanActionsProps): ReactElement {
+  const { t } = useI18n();
+
   return (
     <div className="flex items-center gap-2">
       <Button
@@ -22,7 +25,7 @@ export function ScanActions({
         onClick={() => onStart("quick")}
       >
         <ScanLine {...ICON_PROPS} aria-hidden="true" />
-        Scan cepat
+        {t("scan.quick")}
       </Button>
       <Button
         variant="outline"
@@ -30,7 +33,7 @@ export function ScanActions({
         onClick={() => onStart("deep")}
       >
         <ScanSearch {...ICON_PROPS} aria-hidden="true" />
-        Scan dalam
+        {t("scan.deep")}
       </Button>
     </div>
   );

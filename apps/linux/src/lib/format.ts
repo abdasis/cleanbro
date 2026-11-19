@@ -1,8 +1,34 @@
 const BYTE_UNITS = ["B", "KB", "MB", "GB", "TB", "PB"] as const;
 
+/** Bahasa yang memengaruhi angka, tanggal, dan durasi (bukan satuan byte). */
+export type FormatLanguage = "id" | "en";
+
+const LOCALE: Record<FormatLanguage, string> = {
+  id: "id-ID",
+  en: "en-US",
+};
+
+const COUNT_FORMAT: Record<FormatLanguage, Intl.NumberFormat> = {
+  id: new Intl.NumberFormat(LOCALE.id),
+  en: new Intl.NumberFormat(LOCALE.en),
+};
+
+const DATE_FORMAT: Record<FormatLanguage, Intl.DateTimeFormat> = {
+  id: new Intl.DateTimeFormat(LOCALE.id, {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }),
+  en: new Intl.DateTimeFormat(LOCALE.en, {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }),
+};
+
 /**
  * Ukuran basis 1000, satu desimal untuk KB ke atas, pemisah titik.
- * Contoh: `34.1 GB`, `557 MB`, `0 B`.
+ * Contoh: `34.1 GB`, `557 MB`, `0 B`. Tidak bergantung bahasa.
  */
 export function formatBytes(bytes: number): string {
   if (!Number.isFinite(bytes) || bytes <= 0) return "0 B";
@@ -25,30 +51,40 @@ export function formatPercent(percent: number): string {
   return `${Math.round(Math.min(100, Math.max(0, percent)))}%`;
 }
 
-/** Jumlah file dengan pemisah ribuan id-ID, contoh `12.345`. */
-export function formatCount(count: number): string {
+/** Jumlah file dengan pemisah ribuan sesuai bahasa, contoh `12.345` / `12,345`. */
+export function formatCount(
+  count: number,
+  language: FormatLanguage = "id",
+): string {
   if (!Number.isFinite(count)) return "0";
-  return new Intl.NumberFormat("id-ID").format(Math.max(0, Math.round(count)));
+  return COUNT_FORMAT[language].format(Math.max(0, Math.round(count)));
 }
 
-/** Durasi singkat untuk ringkasan scan, contoh `12,4 detik`. */
-export function formatDuration(durationMs: number): string {
-  if (!Number.isFinite(durationMs) || durationMs < 0) return "0 detik";
-  const seconds = durationMs / 1000;
-  return `${seconds.toFixed(1).replace(".", ",")} detik`;
-}
+/** Durasi singkat, contoh `12,4 detik` / `12.4 s`. */
+export function formatDuration(
+  durationMs: number,
+  language: FormatLanguage = "id",
+): string {
+  if (!Number.isFinite(durationMs) || durationMs < 0) {
+    return language === "en" ? "0 s" : "0 detik";
+  }
 
-const DATE_FORMAT = new Intl.DateTimeFormat("id-ID", {
-  day: "2-digit",
-  month: "short",
-  year: "numeric",
-});
+  const value = new Intl.NumberFormat(LOCALE[language], {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  }).format(durationMs / 1000);
+
+  return `${value} ${language === "en" ? "s" : "detik"}`;
+}
 
 /**
- * Tanggal lokal, contoh `19 Nov 2026, 14:32`. Menerima epoch milidetik;
- * nilai di bawah 1e12 dianggap detik (backend lama memakai detik).
+ * Tanggal lokal, contoh `19 Nov 2026, 14:32` (id) atau `Nov 19, 2026, 14:32`
+ * (en). Menerima epoch milidetik; nilai di bawah 1e12 dianggap detik.
  */
-export function formatDateTime(epoch: number): string {
+export function formatDateTime(
+  epoch: number,
+  language: FormatLanguage = "id",
+): string {
   if (!Number.isFinite(epoch) || epoch <= 0) return "-";
 
   const ms = epoch < 1e12 ? epoch * 1000 : epoch;
@@ -59,7 +95,7 @@ export function formatDateTime(epoch: number): string {
     date.getMinutes(),
   ).padStart(2, "0")}`;
 
-  return `${DATE_FORMAT.format(date)}, ${time}`;
+  return `${DATE_FORMAT[language].format(date)}, ${time}`;
 }
 
 /** Potong teks di tengah agar awal dan akhir path tetap terbaca. */

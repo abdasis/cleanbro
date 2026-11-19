@@ -6,6 +6,31 @@ export type RiskLevel = "safe" | "review" | "risky";
 
 export type DeleteMode = "trash" | "delete";
 
+export type RuleDeleteMode = "trash" | "permanent";
+
+export type RuleCategory =
+  | "developer-cache"
+  | "build"
+  | "media"
+  | "docker"
+  | "system";
+
+/** Satu rule katalog dari command `list_rules`. */
+export interface RuleInfo {
+  id: string;
+  category: RuleCategory;
+  risk: RiskLevel;
+  delete_mode: RuleDeleteMode;
+}
+
+/** Identitas aplikasi dari command `app_info`. */
+export interface AppInfo {
+  name: string;
+  version: string;
+  platform: string;
+  rules_version: string;
+}
+
 export type CleanItemState =
   | "pending"
   | "running"

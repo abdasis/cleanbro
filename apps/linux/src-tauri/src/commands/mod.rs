@@ -4,6 +4,7 @@ pub mod docker;
 pub mod execute;
 pub mod history;
 pub mod preview;
+pub mod rules;
 pub mod scan;
 pub mod system;
 
@@ -11,6 +12,7 @@ pub use docker::{docker_prune, docker_status};
 pub use execute::{execute_clean, request_clean_token};
 pub use history::{list_history, undo_action};
 pub use preview::{preview_selection, set_item_excluded};
+pub use rules::list_rules;
 pub use scan::{cancel_scan, start_scan};
 pub use system::{app_info, disk_summary};
 

@@ -69,3 +69,20 @@ describe("format tambahan", () => {
     expect(result).toContain("...");
   });
 });
+
+describe("format mengikuti bahasa", () => {
+  test("jumlah ribuan en-US", () => {
+    expect(formatCount(12345, "en")).toBe("12,345");
+    expect(formatCount(12345, "id")).toBe("12.345");
+  });
+
+  test("durasi en memakai titik dan satuan s", () => {
+    expect(formatDuration(12_400, "en")).toBe("12.4 s");
+    expect(formatDuration(0, "en")).toBe("0.0 s");
+  });
+
+  test("tanggal en-US", () => {
+    const ts = new Date(2026, 10, 19, 14, 32).getTime();
+    expect(formatDateTime(ts, "en")).toBe("Nov 19, 2026, 14:32");
+  });
+});

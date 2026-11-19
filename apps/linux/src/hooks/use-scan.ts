@@ -35,10 +35,20 @@ export type UseScanResult = {
 /**
  * State scan hidup di hook ini. Event Rust di-merge ke state, lalu
  * ringkasan disk di-invalidasi saat scan selesai.
+ *
+ * `enabledRules` = daftar rule id aktif; `null` berarti semua rule (argumen
+ * `categories` tidak dikirim).
  */
-export function useScan(): UseScanResult {
+export function useScan(
+  enabledRules: string[] | null = null,
+): UseScanResult {
   const queryClient = useQueryClient();
   const scanIdRef = useRef<string | null>(null);
+  const enabledRef = useRef(enabledRules);
+
+  useEffect(() => {
+    enabledRef.current = enabledRules;
+  }, [enabledRules]);
 
   const [scanId, setScanId] = useState<string | null>(null);
   const [progress, setProgress] = useState<ScanProgress | null>(null);
@@ -111,8 +121,10 @@ export function useScan(): UseScanResult {
       setLastMode(mode);
 
       try {
+        const categories = enabledRef.current;
         const result = await invokeCommand<StartScanResult>("start_scan", {
           mode,
+          ...(categories === null ? {} : { categories }),
         });
         updateScanId(result.scan_id);
       } catch (cause) {

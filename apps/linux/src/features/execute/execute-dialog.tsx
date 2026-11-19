@@ -3,14 +3,16 @@ import { Button } from "../../components/ui/button";
 import { Dialog } from "../../components/ui/dialog";
 import { useExecute } from "../../hooks/use-execute";
 import { useUndoAction } from "../../hooks/use-history";
-import { formatBytes } from "../../lib/format";
+import { useErrorMessage, useI18n } from "../../lib/i18n/i18n-context";
+import { useFormat } from "../../lib/i18n/use-format";
+import type { TranslationKey } from "../../lib/i18n/dictionary";
 import type { DeleteMode, PlanItem } from "../../lib/types";
 import { ProgressList } from "./progress-list";
 import { ResultSummary } from "./result-summary";
 
-const MODES: Array<{ value: DeleteMode; label: string }> = [
-  { value: "trash", label: "Ke trash" },
-  { value: "delete", label: "Hapus permanen" },
+const MODES: Array<{ value: DeleteMode; labelKey: TranslationKey }> = [
+  { value: "trash", labelKey: "deleteMode.trash" },
+  { value: "delete", labelKey: "deleteMode.permanent" },
 ];
 
 export type ExecuteDialogProps = {
@@ -30,6 +32,9 @@ export function ExecuteDialog({
   onFinish,
   onViewHistory,
 }: ExecuteDialogProps): ReactElement {
+  const { t } = useI18n();
+  const format = useFormat();
+  const errorMessage = useErrorMessage();
   const [mode, setMode] = useState<DeleteMode>("trash");
   const [confirmText, setConfirmText] = useState("");
   const undo = useUndoAction();
@@ -59,27 +64,31 @@ export function ExecuteDialog({
           disabled={undo.isPending || undo.isSuccess}
           onClick={() => undo.mutate(execution.actionId ?? "")}
         >
-          {undo.isSuccess ? "Dipulihkan" : undo.isPending ? "Memulihkan..." : "Undo"}
+          {undo.isSuccess
+            ? t("execute.undone")
+            : undo.isPending
+              ? t("execute.undoing")
+              : t("execute.undo")}
         </Button>
       ) : null}
       <Button variant="outline" onClick={onViewHistory}>
-        Lihat riwayat
+        {t("execute.viewHistory")}
       </Button>
       <Button variant="primary" onClick={onFinish}>
-        Selesai
+        {t("execute.done")}
       </Button>
     </>
   ) : execution.phase === "error" ? (
     <Button variant="outline" onClick={onClose}>
-      Tutup
+      {t("common.close")}
     </Button>
   ) : running ? undefined : (
     <>
       <Button variant="outline" onClick={onClose}>
-        Batal
+        {t("common.cancel")}
       </Button>
       <Button variant="primary" disabled={!canStart} onClick={start}>
-        Mulai membersihkan
+        {t("execute.start")}
       </Button>
     </>
   );
@@ -87,11 +96,14 @@ export function ExecuteDialog({
   return (
     <Dialog
       open
-      title={done ? "Pembersihan selesai" : "Jalankan pembersihan"}
+      title={done ? t("execute.titleDone") : t("execute.titleRun")}
       description={
         done
-          ? "Ringkasan hasil dan item yang perlu dicek."
-          : `${items.length} item, ${formatBytes(totalBytes)} akan dibersihkan.`
+          ? t("execute.descDone")
+          : t("execute.descRun", {
+              count: format.count(items.length),
+              size: format.bytes(totalBytes),
+            })
       }
       size="lg"
       dismissible={!running}
@@ -102,14 +114,15 @@ export function ExecuteDialog({
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between gap-3">
             <p className="text-ink-muted">
-              Sedang membersihkan {itemIds.length} item. Jangan tutup jendela
-              ini.
+              {t("execute.runningNote", {
+                count: format.count(itemIds.length),
+              })}
             </p>
             <span
               aria-live="polite"
               className="shrink-0 font-mono text-[12px] tabular-nums"
             >
-              {formatBytes(freedLive)} dibebaskan
+              {t("execute.freed", { size: format.bytes(freedLive) })}
             </span>
           </div>
           <ProgressList items={items} progress={execution.items} />
@@ -123,9 +136,11 @@ export function ExecuteDialog({
         />
       ) : execution.phase === "error" ? (
         <div className="rounded-cb border border-line px-4 py-3">
-          <p className="font-semibold">Pembersihan tidak bisa dijalankan</p>
+          <p className="font-semibold">{t("execute.errorTitle")}</p>
           <p className="mt-1 text-ink-muted">
-            {execution.error?.message ?? "Coba lagi sebentar."}
+            {execution.error
+              ? errorMessage(execution.error)
+              : t("execute.errorFallback")}
           </p>
           {execution.error ? (
             <code className="mt-2 inline-block font-mono text-[11px] text-ink-muted">
@@ -137,7 +152,7 @@ export function ExecuteDialog({
         <div className="flex flex-col gap-4">
           <div>
             <p id="execute-mode-label" className="mb-1.5 text-ink-muted">
-              Mode hapus
+              {t("execute.mode")}
             </p>
             <div
               role="radiogroup"
@@ -162,30 +177,25 @@ export function ExecuteDialog({
                         : "text-ink-muted hover:text-ink"
                     }`}
                   >
-                    {option.label}
+                    {t(option.labelKey)}
                   </button>
                 );
               })}
             </div>
           </div>
 
-          <p className="text-ink-muted">
-            Hapus permanen belum tersedia karena belum ada kategori yang
-            ditandai aman untuk dihapus permanen. Semua item masuk ke trash dan
-            masih bisa dipulihkan.
-          </p>
+          <p className="text-ink-muted">{t("execute.permanentUnavailable")}</p>
 
           {mode === "delete" ? (
-            <p className="text-ink-muted">
-              File dihapus permanen dan tidak bisa dipulihkan.
-            </p>
+            <p className="text-ink-muted">{t("execute.deleteWarning")}</p>
           ) : null}
 
           {requiresConfirmation ? (
             <label className="flex flex-col gap-1.5">
               <span>
-                Ketik <span className="font-mono">HAPUS</span> untuk
-                melanjutkan
+                {t("execute.confirmBefore")}{" "}
+                <span className="font-mono">HAPUS</span>{" "}
+                {t("execute.confirmAfter")}
               </span>
               <input
                 type="text"
@@ -198,7 +208,7 @@ export function ExecuteDialog({
               />
               {confirmText.length > 0 && !confirmed ? (
                 <span className="text-danger">
-                  Teks belum sama persis dengan HAPUS.
+                  {t("execute.confirmMismatch")}
                 </span>
               ) : null}
             </label>

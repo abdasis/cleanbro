@@ -22,7 +22,7 @@ export function Checkbox({
         checked={checked}
         disabled={disabled}
         onChange={(event) => onChange(event.target.checked)}
-        className="h-4 w-4 cursor-pointer accent-ink disabled:cursor-not-allowed disabled:opacity-50"
+        className="h-4 w-4 cursor-pointer accent-ink transition-transform duration-150 ease-cb active:scale-[0.96] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-not-allowed disabled:opacity-50"
       />
     </label>
   );

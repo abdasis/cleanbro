@@ -1,4 +1,5 @@
 import type { ReactElement } from "react";
+import { useI18n } from "../../lib/i18n/i18n-context";
 
 export type ProgressBarProps = {
   /** `undefined` = indeterminate (total belum diketahui). */
@@ -12,6 +13,7 @@ export function ProgressBar({
   label,
   className = "",
 }: ProgressBarProps): ReactElement {
+  const { t } = useI18n();
   const clamped =
     value === undefined ? undefined : Math.min(100, Math.max(0, value));
 
@@ -22,7 +24,9 @@ export function ProgressBar({
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={clamped}
-      aria-valuetext={clamped === undefined ? "Sedang menghitung" : undefined}
+      aria-valuetext={
+        clamped === undefined ? t("progress.indeterminate") : undefined
+      }
       className={`h-1.5 w-full overflow-hidden rounded-full bg-surface-muted ${className}`}
     >
       {clamped === undefined ? (

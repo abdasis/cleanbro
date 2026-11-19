@@ -4,8 +4,9 @@ import { Badge, type BadgeTone } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import { ErrorState } from "../../components/ui/error-state";
 import { useCleanPlan } from "../../hooks/use-clean-plan";
-import { formatBytes, formatCount } from "../../lib/format";
-import { RISK_LABEL, ruleMeta } from "../../lib/rules";
+import { useI18n } from "../../lib/i18n/i18n-context";
+import { useFormat } from "../../lib/i18n/use-format";
+import { RISK_KEY, ruleMeta } from "../../lib/rules";
 import type { PlanItem, RiskLevel } from "../../lib/types";
 import { ExecuteDialog } from "../execute/execute-dialog";
 import { ItemTable } from "./item-table";
@@ -29,6 +30,8 @@ export function PreviewSheet({
   onClose,
   onViewHistory,
 }: PreviewSheetProps): ReactElement {
+  const { t } = useI18n();
+  const format = useFormat();
   const closeRef = useRef<HTMLButtonElement>(null);
   const [executeOpen, setExecuteOpen] = useState(false);
 
@@ -36,6 +39,7 @@ export function PreviewSheet({
   const { query, setExcluded } = useCleanPlan(scanId, ruleIds);
   const plan = query.data ?? null;
   const meta = ruleMeta(ruleId);
+  const label = t(meta.labelKey);
 
   useEffect(() => {
     closeRef.current?.focus();
@@ -86,29 +90,29 @@ export function PreviewSheet({
     >
       <section
         role="region"
-        aria-label={`Preview ${meta.label}`}
+        aria-label={t("preview.regionAria", { label })}
         className="cb-sheet-enter flex h-full w-full flex-col border-l border-line bg-surface sm:w-[560px]"
       >
         <header className="shrink-0 border-b border-line px-6 py-4">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="text-ink-muted">Preview kategori</p>
+              <p className="text-ink-muted">{t("preview.label")}</p>
               <h2 className="text-lg font-semibold tracking-[-0.01em]">
-                {meta.label}
+                {label}
               </h2>
               <div className="mt-2 flex flex-wrap items-center gap-2">
                 <code className="font-mono text-[12px] text-ink-muted">
                   {ruleId}
                 </code>
                 <Badge tone={RISK_TONE[meta.risk]}>
-                  {RISK_LABEL[meta.risk]}
+                  {t(RISK_KEY[meta.risk])}
                 </Badge>
               </div>
             </div>
             <button
               ref={closeRef}
               type="button"
-              aria-label="Tutup preview"
+              aria-label={t("preview.close")}
               onClick={onClose}
               className="relative -mr-1 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-cb text-ink-muted transition-colors duration-150 ease-cb before:absolute before:-inset-1 before:content-[''] hover:bg-surface-muted hover:text-ink active:scale-[0.96]"
             >
@@ -119,13 +123,11 @@ export function PreviewSheet({
 
         <div className="min-h-0 flex-1 overflow-y-auto">
           {query.isPending ? (
-            <p className="px-6 py-8 text-ink-muted">
-              Menyiapkan daftar item...
-            </p>
+            <p className="px-6 py-8 text-ink-muted">{t("preview.loading")}</p>
           ) : query.isError ? (
             <div className="p-4">
               <ErrorState
-                title="Preview tidak bisa dimuat"
+                title={t("preview.errorTitle")}
                 error={query.error}
                 onRetry={() => void query.refetch()}
               />
@@ -134,20 +136,19 @@ export function PreviewSheet({
             <>
               <div className="flex items-center justify-between gap-4 px-6 py-4">
                 <p className="text-ink-muted tabular-nums">
-                  {formatCount(plan.total_items)} item,{" "}
-                  <span className="text-ink">
-                    {formatBytes(plan.total_bytes)}
-                  </span>{" "}
-                  akan dibebaskan
+                  {t("preview.summary", {
+                    count: format.count(plan.total_items),
+                    size: format.bytes(plan.total_bytes),
+                  })}
                 </p>
                 <span className="font-mono text-lg tabular-nums">
-                  {formatBytes(plan.total_bytes)}
+                  {format.bytes(plan.total_bytes)}
                 </span>
               </div>
 
               {setExcluded.isError ? (
                 <p className="px-6 pb-3 text-danger">
-                  Pilihan tidak tersimpan. Coba lagi.
+                  {t("preview.saveError")}
                 </p>
               ) : null}
 
@@ -166,18 +167,20 @@ export function PreviewSheet({
             disabled={!canSelectSafe}
             onClick={() => void selectAllSafe()}
           >
-            Pilih semua aman
+            {t("preview.selectAllSafe")}
           </Button>
           <div className="ml-auto flex items-center gap-2">
             <Button variant="outline" onClick={onClose}>
-              Batal
+              {t("common.cancel")}
             </Button>
             <Button
               variant="primary"
               disabled={!canExecute}
               onClick={() => setExecuteOpen(true)}
             >
-              Bersihkan ({formatBytes(plan?.total_bytes ?? 0)})
+              {t("preview.clean", {
+                size: format.bytes(plan?.total_bytes ?? 0),
+              })}
             </Button>
           </div>
         </footer>

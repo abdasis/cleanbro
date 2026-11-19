@@ -66,6 +66,17 @@ impl Category {
             Self::System => "system",
         }
     }
+
+    /// Slug kebab yang dipakai kontrak UI (`developer-cache`).
+    pub fn slug(self) -> &'static str {
+        match self {
+            Self::DeveloperCache => "developer-cache",
+            Self::Docker => "docker",
+            Self::Build => "build",
+            Self::Media => "media",
+            Self::System => "system",
+        }
+    }
 }
 
 /// Prasyarat tambahan yang diperiksa guard sebelum artefak boleh dihapus.

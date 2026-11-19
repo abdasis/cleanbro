@@ -1,6 +1,7 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { Minus, Square, X } from "lucide-react";
 import type { ReactElement } from "react";
+import { useI18n } from "../lib/i18n/i18n-context";
 import { isTauri } from "../lib/ipc";
 
 const ICON_SIZE = 14;
@@ -10,6 +11,8 @@ const ICON_SIZE = 14;
  * komponen ini tidak dirender.
  */
 export function WindowControls(): ReactElement | null {
+  const { t } = useI18n();
+
   if (!isTauri()) return null;
 
   const appWindow = getCurrentWindow();
@@ -24,8 +27,8 @@ export function WindowControls(): ReactElement | null {
     <div className="ml-auto flex h-full items-center">
       <button
         type="button"
-        aria-label="Minimalkan jendela"
-        title="Minimalkan"
+        aria-label={t("titlebar.minimize")}
+        title={t("titlebar.minimize")}
         className={buttonClass}
         onClick={run(() => appWindow.minimize())}
       >
@@ -33,8 +36,8 @@ export function WindowControls(): ReactElement | null {
       </button>
       <button
         type="button"
-        aria-label="Perbesar jendela"
-        title="Perbesar"
+        aria-label={t("titlebar.maximize")}
+        title={t("titlebar.maximize")}
         className={buttonClass}
         onClick={run(() => appWindow.toggleMaximize())}
       >
@@ -42,8 +45,8 @@ export function WindowControls(): ReactElement | null {
       </button>
       <button
         type="button"
-        aria-label="Tutup jendela"
-        title="Tutup"
+        aria-label={t("titlebar.close")}
+        title={t("titlebar.close")}
         className={buttonClass}
         onClick={run(() => appWindow.close())}
       >

@@ -1,5 +1,6 @@
 import { HardDrive } from "lucide-react";
 import type { ReactElement } from "react";
+import { useI18n } from "../lib/i18n/i18n-context";
 import { Badge } from "./ui/badge";
 import { WindowControls } from "./window-controls";
 
@@ -8,6 +9,8 @@ import { WindowControls } from "./window-controls";
  * tombol adalah drag region, jadi jendela bisa digeser dari mana saja di sini.
  */
 export function Titlebar(): ReactElement {
+  const { t } = useI18n();
+
   return (
     <div
       data-tauri-drag-region
@@ -20,7 +23,7 @@ export function Titlebar(): ReactElement {
         className="text-ink-muted"
       />
       <span data-tauri-drag-region className="text-[13px] font-medium">
-        Sapu Bersih
+        {t("app.name")}
       </span>
       <Badge className="ml-1">Linux</Badge>
       <WindowControls />

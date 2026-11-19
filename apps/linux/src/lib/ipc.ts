@@ -12,6 +12,7 @@ export type CommandName =
   | "list_history"
   | "undo_action"
   | "app_info"
+  | "list_rules"
   | "docker_status"
   | "docker_prune";
 
@@ -56,7 +57,8 @@ export function toIpcError(cause: unknown): IpcError {
 
   if (typeof cause === "string") return new IpcError("Internal", cause);
 
-  return new IpcError("Internal", "Perintah gagal dijalankan. Coba lagi ya.");
+  // Sentinel key: lapisan UI menerjemahkan lewat kamus.
+  return new IpcError("Internal", "error.internal");
 }
 
 export function isTauri(): boolean {
@@ -76,10 +78,7 @@ export async function invokeCommand<T>(
   args?: Record<string, unknown>,
 ): Promise<T> {
   if (!isTauri()) {
-    throw new IpcError(
-      "Unavailable",
-      "Aplikasi desktop belum tersedia di lingkungan ini.",
-    );
+    throw new IpcError("Unavailable", "error.Unavailable");
   }
 
   try {

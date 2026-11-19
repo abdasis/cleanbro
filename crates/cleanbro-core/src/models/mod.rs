@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::rules::RULES_VERSION;
+use crate::rules::{Rule, RULES_VERSION};
 
 mod action;
 mod disk;
@@ -39,6 +39,26 @@ impl AppInfo {
             version: version.to_owned(),
             platform,
             rules_version: RULES_VERSION.to_owned(),
+        }
+    }
+}
+
+/// Ringkasan rule untuk katalog Setelan di UI.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct RuleInfo {
+    pub id: String,
+    pub category: String,
+    pub risk: String,
+    pub delete_mode: String,
+}
+
+impl RuleInfo {
+    pub fn from_rule(rule: &Rule) -> Self {
+        Self {
+            id: rule.id.to_owned(),
+            category: rule.category.slug().to_owned(),
+            risk: rule.risk.as_str().to_owned(),
+            delete_mode: rule.delete_mode.as_str().to_owned(),
         }
     }
 }

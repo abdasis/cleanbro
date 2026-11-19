@@ -1,6 +1,7 @@
 import type { ReactElement } from "react";
 import { Badge } from "../../components/ui/badge";
-import { formatBytes } from "../../lib/format";
+import { useI18n } from "../../lib/i18n/i18n-context";
+import { useFormat } from "../../lib/i18n/use-format";
 import type { DockerContainer, DockerImage } from "../../lib/types";
 
 const LIST_LIMIT = 5;
@@ -21,10 +22,11 @@ function ListHeader({
 }
 
 function Remaining({ count }: { count: number }): ReactElement | null {
+  const { t } = useI18n();
   if (count <= 0) return null;
   return (
     <p className="border-t border-line px-4 py-2 text-[12px] text-ink-muted">
-      +{count} lainnya
+      {t("docker.remaining", { count })}
     </p>
   );
 }
@@ -38,13 +40,15 @@ export function DockerContainerList({
 }: {
   containers: DockerContainer[];
 }): ReactElement {
+  const { t } = useI18n();
+  const format = useFormat();
   const visible = containers.slice(0, LIST_LIMIT);
 
   return (
     <div>
-      <ListHeader title="Container" count={containers.length} />
+      <ListHeader title={t("docker.containersTitle")} count={containers.length} />
       {visible.length === 0 ? (
-        <Empty label="Tidak ada container" />
+        <Empty label={t("docker.noContainers")} />
       ) : (
         <ul className="divide-y divide-line">
           {visible.map((container) => (
@@ -65,7 +69,7 @@ export function DockerContainerList({
                 {container.state}
               </span>
               <span className="w-20 shrink-0 text-right font-mono text-[12px] tabular-nums">
-                {formatBytes(container.size_bytes)}
+                {format.bytes(container.size_bytes)}
               </span>
             </li>
           ))}
@@ -81,13 +85,15 @@ export function DockerImageList({
 }: {
   images: DockerImage[];
 }): ReactElement {
+  const { t } = useI18n();
+  const format = useFormat();
   const visible = images.slice(0, LIST_LIMIT);
 
   return (
     <div>
-      <ListHeader title="Image" count={images.length} />
+      <ListHeader title={t("docker.imagesTitle")} count={images.length} />
       {visible.length === 0 ? (
-        <Empty label="Tidak ada image" />
+        <Empty label={t("docker.noImages")} />
       ) : (
         <ul className="divide-y divide-line">
           {visible.map((image) => {
@@ -101,9 +107,9 @@ export function DockerImageList({
                 >
                   {reference}
                 </span>
-                {image.in_use ? <Badge>Dipakai</Badge> : null}
+                {image.in_use ? <Badge>{t("docker.inUse")}</Badge> : null}
                 <span className="w-20 shrink-0 text-right font-mono text-[12px] tabular-nums">
-                  {formatBytes(image.size_bytes)}
+                  {format.bytes(image.size_bytes)}
                 </span>
               </li>
             );

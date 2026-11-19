@@ -1,42 +1,5 @@
+import { ruleKey, type TranslationKey } from "./i18n/dictionary";
 import type { RiskLevel } from "./types";
-
-const RULE_LABELS: Record<string, string> = {
-  "cache.gradle": "Cache Gradle",
-  "cache.bun": "Cache bun",
-  "cache.npm": "Cache npm",
-  "cache.pnpm": "Cache pnpm",
-  "cache.pip": "Cache pip",
-  "cache.uv": "Cache uv",
-  "cache.composer": "Cache Composer",
-  "cache.cargo.registry": "Cache Cargo",
-  "cache.go": "Cache Go",
-  "cache.cypress": "Cache Cypress",
-  "cache.playwright": "Cache Playwright",
-  "cache.huggingface": "Cache Hugging Face",
-  "cache.dotslash": "Cache Dotslash",
-  "cache.chrome": "Cache Chrome",
-  "cache.thumbnails": "Thumbnail",
-  "cache.tracker": "Cache Tracker",
-  "build.node_modules": "node_modules",
-  "build.rust_target": "Target Rust",
-  "build.next": ".next",
-  "build.dist": "Dist",
-  "build.gradle": "Build Gradle",
-  "build.flutter": "Build Flutter",
-  "build.vendor": "Vendor Composer",
-  "media.render_out": "Hasil render",
-  "media.cache": "Cache media",
-  "docker.containers_stopped": "Container berhenti",
-  "docker.images_dangling": "Image dangling",
-  "docker.images_unused": "Image tidak terpakai",
-  "docker.volumes_unused": "Volume tidak terpakai",
-  "system.apt_cache": "Cache apt",
-  "system.journal": "Journal sistem",
-  "system.old_kernels": "Kernel lama",
-  "advice.big_files": "File besar",
-  "advice.old_downloads": "Unduhan lama",
-  "advice.trash": "Trash",
-};
 
 const SAFE_RULES = new Set([
   "build.node_modules",
@@ -55,14 +18,15 @@ const RISKY_RULES = new Set([
   "system.old_kernels",
 ]);
 
-export const RISK_LABEL: Record<RiskLevel, string> = {
-  safe: "aman",
-  review: "perlu tinjauan",
-  risky: "berisiko",
+/** Key kamus untuk label risiko; dipakai bersama oleh badge di semua layar. */
+export const RISK_KEY: Record<RiskLevel, TranslationKey> = {
+  safe: "risk.safe",
+  review: "risk.review",
+  risky: "risk.risky",
 };
 
 export type RuleMeta = {
-  label: string;
+  labelKey: TranslationKey;
   risk: RiskLevel;
 };
 
@@ -74,8 +38,5 @@ export function ruleMeta(ruleId: string): RuleMeta {
       ? "safe"
       : "review";
 
-  return {
-    label: RULE_LABELS[ruleId] ?? "Kategori lainnya",
-    risk,
-  };
+  return { labelKey: ruleKey(ruleId), risk };
 }

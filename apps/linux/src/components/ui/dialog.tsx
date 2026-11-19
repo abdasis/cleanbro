@@ -7,6 +7,7 @@ import {
   type RefObject,
 } from "react";
 import { X } from "lucide-react";
+import { useI18n } from "../../lib/i18n/i18n-context";
 
 const FOCUSABLE =
   'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -47,6 +48,7 @@ export function Dialog({
   children,
   footer,
 }: DialogProps): ReactElement | null {
+  const { t } = useI18n();
   const titleId = useId();
   const descriptionId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -136,7 +138,7 @@ export function Dialog({
           </div>
           <button
             type="button"
-            aria-label="Tutup dialog"
+            aria-label={t("common.close")}
             disabled={!dismissible}
             onClick={onClose}
             className="relative -mr-1 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-cb text-ink-muted transition-colors duration-150 ease-cb before:absolute before:-inset-1 before:content-[''] hover:bg-surface-muted hover:text-ink active:scale-[0.96] disabled:pointer-events-none disabled:opacity-40"

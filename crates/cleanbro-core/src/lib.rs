@@ -13,8 +13,8 @@ pub use error::{AppError, AppResult, ErrorCode};
 pub use models::{
     ActionStatus, ActionSummary, AppInfo, CategoryDone, CleanFinished, CleanItemState, CleanMode,
     CleanPlan, CleanProgress, DiskSummary, DockerContainer, DockerDiskUsage, DockerImage,
-    DockerPruneResult, DockerStatus, Finding, HistoryPage, PlanItem, Platform, ScanFinished,
-    ScanId, ScanMode, ScanProgress, TokenGrant, UndoEntry, UndoOutcome, WarnLevel,
+    DockerPruneResult, DockerStatus, Finding, HistoryPage, PlanItem, Platform, RuleInfo,
+    ScanFinished, ScanId, ScanMode, ScanProgress, TokenGrant, UndoEntry, UndoOutcome, WarnLevel,
     CONFIRM_THRESHOLD_BYTES,
 };
 pub use rules::{Category, DeleteMode, Guard, Matcher, RiskLevel, Rule, RULES, RULES_VERSION};

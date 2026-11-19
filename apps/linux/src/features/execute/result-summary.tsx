@@ -1,11 +1,7 @@
 import type { ReactElement } from "react";
 import type { ItemProgress } from "../../hooks/use-execute";
-import {
-  formatBytes,
-  formatCount,
-  formatDuration,
-  truncateMiddle,
-} from "../../lib/format";
+import { useI18n } from "../../lib/i18n/i18n-context";
+import { useFormat } from "../../lib/i18n/use-format";
 import type { CleanFinished, PlanItem } from "../../lib/types";
 
 export type ResultSummaryProps = {
@@ -21,19 +17,22 @@ export function ResultSummary({
   items,
   progress,
 }: ResultSummaryProps): ReactElement {
+  const { t } = useI18n();
+  const format = useFormat();
+
   const problems = items.filter((item) => {
     const state = progress[item.item_id]?.state;
     return state === "failed" || state === "skipped";
   });
 
   const stats: Array<{ label: string; value: string }> = [
-    { label: "Dibebaskan", value: formatBytes(finished.freed_bytes) },
-    { label: "Dihapus", value: formatCount(finished.deleted) },
-    { label: "Gagal", value: formatCount(finished.failed) },
-    { label: "Dilewati", value: formatCount(finished.skipped) },
+    { label: t("result.freed"), value: format.bytes(finished.freed_bytes) },
+    { label: t("result.deleted"), value: format.count(finished.deleted) },
+    { label: t("result.failed"), value: format.count(finished.failed) },
+    { label: t("result.skipped"), value: format.count(finished.skipped) },
     {
-      label: "Durasi",
-      value: durationMs === null ? "-" : formatDuration(durationMs),
+      label: t("result.duration"),
+      value: durationMs === null ? "-" : format.duration(durationMs),
     },
   ];
 
@@ -55,15 +54,15 @@ export function ResultSummary({
 
       {problems.length > 0 ? (
         <div>
-          <h3 className="mb-2 font-semibold">Item bermasalah</h3>
+          <h3 className="mb-2 font-semibold">{t("result.problems")}</h3>
           <table className="w-full table-fixed">
             <thead>
               <tr className="border-b border-line text-left text-[11px] uppercase tracking-[0.06em] text-ink-muted">
                 <th scope="col" className="py-2 font-medium">
-                  Path
+                  {t("result.path")}
                 </th>
                 <th scope="col" className="w-40 py-2 font-medium">
-                  Alasan
+                  {t("result.reason")}
                 </th>
               </tr>
             </thead>
@@ -77,13 +76,13 @@ export function ResultSummary({
                         title={item.path}
                         className="block truncate font-mono text-[12px]"
                       >
-                        {truncateMiddle(item.path, 56)}
+                        {format.truncateMiddle(item.path, 56)}
                       </span>
                     </td>
                     <td className="py-2 text-ink-muted">
                       {state === "skipped"
-                        ? "Dilewati oleh guard keamanan."
-                        : "Gagal diproses, cek izin file."}
+                        ? t("result.skippedReason")
+                        : t("result.failedReason")}
                     </td>
                   </tr>
                 );

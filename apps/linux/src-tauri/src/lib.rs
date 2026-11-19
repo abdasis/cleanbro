@@ -24,6 +24,7 @@ pub fn run() {
             commands::execute::execute_clean,
             commands::history::list_history,
             commands::history::undo_action,
+            commands::rules::list_rules,
         ])
         .run(tauri::generate_context!())
         .expect("failed to run Sapu Bersih");
