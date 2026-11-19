@@ -1,19 +1,30 @@
-use cleanbro_core::{AppInfo, Platform};
+pub mod adapters;
+pub mod commands;
+pub mod services;
 
-/// Identitas app ini; dipisah dari command agar bisa dites tanpa runtime Tauri.
-pub fn current_app_info() -> AppInfo {
-    AppInfo::new("Sapu Bersih", env!("CARGO_PKG_VERSION"), Platform::Linux)
-}
+use std::sync::Arc;
 
-#[tauri::command]
-fn app_info() -> AppInfo {
-    current_app_info()
-}
+pub use commands::system::current_app_info;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![app_info])
+        .manage(Arc::new(services::scan_runtime::ScanState::default()))
+        .manage(Arc::new(services::token_service::TokenStore::new()))
+        .invoke_handler(tauri::generate_handler![
+            commands::system::app_info,
+            commands::system::disk_summary,
+            commands::docker::docker_status,
+            commands::docker::docker_prune,
+            commands::scan::start_scan,
+            commands::scan::cancel_scan,
+            commands::preview::preview_selection,
+            commands::preview::set_item_excluded,
+            commands::execute::request_clean_token,
+            commands::execute::execute_clean,
+            commands::history::list_history,
+            commands::history::undo_action,
+        ])
         .run(tauri::generate_context!())
         .expect("failed to run Sapu Bersih");
 }
@@ -21,6 +32,7 @@ pub fn run() {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use cleanbro_core::Platform;
 
     #[test]
     fn app_info_matches_this_app() {
