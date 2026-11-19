@@ -1,26 +1,37 @@
-# macOS
-.DS_Store
-._*
+# Rust
+target/
+**/target/
 
-# Go
-.gocache/
-/bin/
-*.test
-*.out
+# Node
+node_modules/
+apps/linux/dist/
 
-# Swift Package Manager / build CleanBro
-CleanBro/.build/
-CleanBro/build/
+# Tauri
+**/src-tauri/gen/
+
+# Swift Package Manager / CleanBro build
+apps/macos/app/.build/
+apps/macos/app/build/
 .swiftpm/
 *.xcodeproj/
 xcuserdata/
 DerivedData/
+
+# Go
+.gocache/
+apps/macos/cli/bin/
+apps/macos/cli/dist/
+*.test
+*.out
 
 # Editor
 .vscode/
 .idea/
 *.swp
 
-# Promo video (lokal saja)
-promo/
-docs
+# macOS
+.DS_Store
+._*
+
+# Local
+*.log
