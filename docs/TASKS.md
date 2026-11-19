@@ -18,11 +18,11 @@ dikerjakan terpisah dengan SwiftUI; lihat [PLATFORMS.md](PLATFORMS.md).
 | Milestone | Status |
 | --- | --- |
 | M0 scaffold monorepo (cargo workspace, core crate, app Tauri, UI shell, CI) | selesai |
-| M1 fondasi Rust | belum dimulai |
-| M2 scan engine | belum dimulai |
-| M3 preview dan eksekusi | belum dimulai |
-| M4 docker adapter | belum dimulai |
-| M5 UI lengkap | belum dimulai |
+| M1 fondasi Rust | selesai |
+| M2 scan engine | selesai |
+| M3 preview, eksekusi, riwayat | selesai |
+| M4 docker adapter | dikerjakan |
+| M5 UI lengkap | sebagian: overview, scan, preview, eksekusi, hasil, riwayat, docker. Belum: setelan, i18n, shortcut |
 | M6 rilis | belum dimulai |
 
 ## Cara eksekusi
@@ -38,6 +38,14 @@ Aturan umum untuk setiap task:
 - Semua path relatif terhadap root repo.
 - Urutan milestone wajib: M1, M2, M3, M4, M5, M6. Task di dalam milestone boleh
   dikerjakan paralel hanya bila tidak menyentuh file yang sama.
+
+## Catatan deviasi
+
+- Mode `delete` (hapus permanen) dinonaktifkan di UI sampai katalog punya rule
+  `DeleteMode::Permanent`. Gate token tetap ada di backend.
+- Docker prune v0.1 hanya untuk `containers` dan `images_dangling`; volume dan
+  `image prune -a` hanya ditampilkan sebagai data.
+- Undo memakai jurnal trash 30 hari; indikator sisa masa undo belum tampil di UI.
 
 ## Definisi selesai v0.1
 
